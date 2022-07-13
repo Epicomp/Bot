@@ -95,7 +95,7 @@ if st.button("Download"):
     if len(video) > 0:
         downloaded , download_audio = False, option=='Audio'
         download_video = st.button("Download Video")
-        if yt.streams.filter(only_audio=True):
+        if videoObject.streams.filter(only_audio=True):
             download_audio = st.button("Download Audio Only")
         if download_video:
             video.get_lowest_resolution().download()
