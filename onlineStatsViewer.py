@@ -62,11 +62,6 @@ st.text("I am a simple tool, just enter the URL and I will give the video statis
 
 youtubeVideoUrl = st.text_input("Enter the URL of the Youtube Video", value="", type="default")
 
-option = st.selectbox(
-    'Select type of format of the video to download',
-    ('Audio', 'Highest Resolution', 'Lowest Resolution')
-)
-
 if st.button("Download"): 
 
     if (youtubeVideoUrl is None or len(youtubeVideoUrl) == 0):
@@ -83,13 +78,6 @@ if st.button("Download"):
         chime.success()
     except Exception as e:
         chime.error()
-    
-    if option=='Audio':
-        videoObject.streams.get_audio_only().download()
-    elif option=='Highest Resolution':
-        videoObject.streams.get_highest_resolution().download()
-    elif option=='Lowest Resolution':
-        videoObject.streams.get_lowest_resolution().download()
         
     video = videoObject.streams
     if len(video) > 0:
