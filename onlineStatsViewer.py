@@ -91,7 +91,22 @@ if st.button("Download"):
     elif option=='Lowest Resolution':
         videoObject.streams.get_lowest_resolution().download()
         
-    st.download_button(label="Click here to download", data=videoObject.streams.get_highest_resolution(), file_name="video.mp4")
+    video = videoObject.streams
+    if len(video) > 0:
+        downloaded , download_audio = False, option=='Audio'
+        download_video = st.button("Download Video")
+        if yt.streams.filter(only_audio=True):
+            download_audio = st.button("Download Audio Only")
+        if download_video:
+            video.get_lowest_resolution().download()
+            downloaded = True
+        if download_audio:
+            video.filter(only_audio=True).first().download()
+            downloaded = True
+        if downloaded:
+            st.subheader("Download Complete")
+    else:
+        st.subheader("Sorry, this video can not be downloaded")
 
 
 if st.button("View Video"):
