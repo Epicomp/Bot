@@ -82,14 +82,13 @@ if st.button("Download"):
     video = videoObject.streams
     if len(video) > 0:
         downloaded , download_audio = False, False
-        download_video = st.button("Download Video")
         if videoObject.streams.filter(only_audio=True):
-            download_audio = st.button("Download Audio Only")
+            download_audio = st.download_button(label="Download Audio Only", data=video, file_name="audio.mp3")
         if download_video:
-            video.get_lowest_resolution().download()
+            download_video = st.download_button(label="Download Video", data=video, file_name="video.mp4")
             downloaded = True
         if download_audio:
-            video.filter(only_audio=True).first().download()
+            download_video = st.download_button(label="Download Video", data=video, file_name="video.mp4")
             downloaded = True
         if downloaded:
             st.subheader("Download Complete")
