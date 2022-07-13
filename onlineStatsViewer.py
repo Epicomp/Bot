@@ -81,7 +81,7 @@ if st.button("Download"):
         
     video = videoObject.streams
     if len(video) > 0:
-        downloaded , download_audio = False, option=='Audio'
+        downloaded , download_audio = False, False
         download_video = st.button("Download Video")
         if videoObject.streams.filter(only_audio=True):
             download_audio = st.button("Download Audio Only")
