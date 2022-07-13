@@ -62,74 +62,87 @@ st.text("I am a simple tool, just enter the URL and I will give the video statis
 
 youtubeVideoUrl = st.text_input("Enter the URL of the Youtube Video", value="", type="default")
 
-if st.button("Download"): 
+option = st.selectbox(
+    'Select type of format of the video to download',
+    ('Audio', 'Highest Resolution', 'Lowest Resolution')
+)
 
-    if (youtubeVideoUrl is None or len(youtubeVideoUrl) == 0):
-        chime.error()
-    
-    videoObject = YouTube(youtubeVideoUrl)
+if youtubeVideoUrl:
+    with st.expander("Download"): 
 
-    try:
-        st.markdown("**Author of this video:** " + str(videoObject.author))
-        st.markdown("**Title of video:** " + str(videoObject.title))
-        st.markdown("**Number of views:** " + str(videoObject.views))
-        st.markdown("**Video description:** " + str(videoObject.description))
-        st.markdown("**Channel ID:** " + str(videoObject.channel_id))
-        chime.success()
-    except Exception as e:
-        chime.error()
+        if (youtubeVideoUrl is None or len(youtubeVideoUrl) == 0):
+            chime.error()
         
-    video = videoObject.streams
-    if len(video) > 0:
-        downloaded , download_audio = False, False
-        if videoObject.streams.filter(only_audio=True):
-            download_audio = st.download_button(label="Download Audio Only", data=video, file_name="audio.mp3")
-        if download_video:
-            download_video = st.download_button(label="Download Video", data=video, file_name="video.mp4")
-            downloaded = True
-        if download_audio:
-            download_video = st.download_button(label="Download Video", data=video, file_name="video.mp4")
-            downloaded = True
-        if downloaded:
-            st.subheader("Download Complete")
-    else:
-        st.subheader("Sorry, this video can not be downloaded")
+        videoObject = YouTube(youtubeVideoUrl)
 
+        try:
+            st.markdown("**Author of this video:** " + str(videoObject.author))
+            st.markdown("**Title of video:** " + str(videoObject.title))
+            st.markdown("**Number of views:** " + str(videoObject.views))
+            st.markdown("**Video description:** " + str(videoObject.description))
+            st.markdown("**Channel ID:** " + str(videoObject.channel_id))
+            chime.success()
+        except Exception as e:
+            chime.error()
+        
+        if option=='Audio':
+            a = videoObject.streams.get_audio_only().download()
+        elif option=='Highest Resolution':
+            a = videoObject.streams.get_highest_resolution().download()
+        elif option=='Lowest Resolution':
+            a = videoObject.streams.get_lowest_resolution().download()
 
-if st.button("View Video"):
+        video = videoObject.streams
+        if len(video) > 0:
+            downloaded = False
+            download_video = st.download_button(label="Download Video", data=a, file_name="video.mp4")
+            download_audio = st.download_button(label="Download Audio Only", data=a, file_name="audio.mp3")
+            if download_video:
+                downloaded = True
+            if download_audio:
+                downloaded = True
+            if downloaded:
+                st.subheader("Download Complete")
+        else:
+            st.subheader("Sorry, this video can not be downloaded")
 
-    if (youtubeVideoUrl is None or len(youtubeVideoUrl) == 0):
-        chime.error()
-
-    videoObject = YouTube(youtubeVideoUrl)
     
-    st.video(youtubeVideoUrl) 
-    
-    try:
-        st.markdown("**Author of this video:** " + str(videoObject.author))
-        st.markdown("**Title of video:** " + str(videoObject.title))
-        st.markdown("**Number of views:** " + str(videoObject.views))
-        st.markdown("**Video description:** " + str(videoObject.description))
-        st.markdown("**Channel ID:** " + str(videoObject.channel_id))
-        chime.success()
-    except Exception as e:
-        chime.error()
 
-if st.button("View Channel Statistics"):
 
-    if (youtubeVideoUrl is None or len(youtubeVideoUrl) == 0):
-        chime.error()
+    with st.expander("View Video"):
 
-    videoObject = YouTube(youtubeVideoUrl)
+        if (youtubeVideoUrl is None or len(youtubeVideoUrl) == 0):
+            chime.error()
 
-    processingTheVid(videoObject.channel_id)
+        videoObject = YouTube(youtubeVideoUrl)
+        
+        st.video(youtubeVideoUrl) 
+        
+        try:
+            st.markdown("**Author of this video:** " + str(videoObject.author))
+            st.markdown("**Title of video:** " + str(videoObject.title))
+            st.markdown("**Number of views:** " + str(videoObject.views))
+            st.markdown("**Video description:** " + str(videoObject.description))
+            st.markdown("**Channel ID:** " + str(videoObject.channel_id))
+            chime.success()
+        except Exception as e:
+            chime.error()
 
-    data = createDataset().astype(str)
+    with st.expander("View Channel Statistics"):
 
-    st.dataframe(data)
+        if (youtubeVideoUrl is None or len(youtubeVideoUrl) == 0):
+            chime.error()
 
-    # dataHist = data.plot.bar(x="title", y="views", figsize=(12, 8), fontsize=14)
-    # st.pyplot(fig=dataHist)
+        videoObject = YouTube(youtubeVideoUrl)
+
+        processingTheVid(videoObject.channel_id)
+
+        data = createDataset().astype(str)
+
+        st.dataframe(data)
+
+        # dataHist = data.plot.bar(x="title", y="views", figsize=(12, 8), fontsize=14)
+        # st.pyplot(fig=dataHist)
 
 footer="""<style>
 a:link , a:visited{
