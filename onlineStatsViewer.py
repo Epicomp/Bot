@@ -90,6 +90,8 @@ if st.button("Download"):
         videoObject.streams.get_highest_resolution().download()
     elif option=='Lowest Resolution':
         videoObject.streams.get_lowest_resolution().download()
+        
+    st.download_button(label="Click here to download", data=videoObject.streams.get_highest_resolution(), file_name="video.mp4")
 
 
 if st.button("View Video"):
